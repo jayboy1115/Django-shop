@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from .models import Product, Cart, CartItem
-from .serializers import ProductSerializer, DetailedProductSerializer, CartItemSerializer, SimpleCartSerializer, CartSerializer
+from .serializers import ProductSerializer, DetailedProductSerializer, CartItemSerializer, SimpleCartSerializer, \
+    CartSerializer, UserSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -92,3 +93,10 @@ def delete_cartitem(request):
 def get_username(request):
     user = request.user
     return Response({"username": user.username})
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def user_items(request):
+    user = request.user
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
