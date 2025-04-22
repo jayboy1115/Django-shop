@@ -11,11 +11,18 @@ from rest_framework.permissions import IsAuthenticated
 from decimal import Decimal
 from django.conf import settings
 import requests
+import paypalrestsdk
 
 
 # Create your views here.
 
 BASE_URL = "http://localhost:5173"
+
+paypalrestsdk.configure({
+    "mode": settings.PAYPAL_MODE,
+    "client_id": settings.PAYPAL_CLIENT_ID,
+    "client_secret": settings.PAYPAL_CLIENT_SECRET
+})
 
 @api_view(["GET"])
 def products(request):
@@ -108,63 +115,81 @@ def user_info(request):
     serializer = UserSerializer(user)
     return Response(serializer.data)
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def initiate_payment(request):
-    if request.user:
+    if not request.user.is_authenticated:
+        return Response({"error": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        cart_code = request.data.get("cart_code")
+        if not cart_code:
+            return Response({"error": "cart_code is required"}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            tx_ref = str(uuid.uuid4())
-            cart_code = request.data.get("cart_code")
             cart = Cart.objects.get(cart_code=cart_code)
-            user = request.user
+        except Cart.DoesNotExist:
+            return Response({"error": "Cart not found"}, status=status.HTTP_404_NOT_FOUND)
 
-            amount = sum(item.quantity * item.product.price for item in cart.items.all())
-            tax = Decimal("4.00")
-            total_amount = amount + tax
-            currency = "USD"
-            redirect_url = f"{BASE_URL}/payment-status/"
+        if not cart.items.exists():
+            return Response({"error": "Cart is empty"}, status=status.HTTP_400_BAD_REQUEST)
 
-            transaction = Transaction.objects.create(
-                ref=tx_ref,
-                cart=cart,
-                amount=total_amount,
-                currency=currency,
-                user=user,
-                status="pending",
-            )
+        user = request.user
+        tx_ref = str(uuid.uuid4())
 
-            flutterwave_payload = {
-                "tx_ref": tx_ref,
-                "amount": str(total_amount),
-                "currency": currency,
-                "redirect_url": redirect_url,
-                "customer": {
-                    "email": user.email,
-                    "name": user.username,
-                    "phonenumber": user.phone
-                },
-                "customizations": {
-                    "title": "Shoppit Payment"
-                }
+        amount = sum(item.quantity * item.product.price for item in cart.items.all())
+        if amount <= 0:
+            return Response({"error": "Cart total is invalid"}, status=status.HTTP_400_BAD_REQUEST)
+
+        tax = Decimal("4.00")
+        total_amount = amount + tax
+        currency = "USD"
+        redirect_url = f"{settings.BASE_URL}/payment-status/"
+
+        transaction = Transaction.objects.create(
+            ref=tx_ref,
+            cart=cart,
+            amount=total_amount,
+            currency=currency,
+            user=user,
+            status="pending",
+        )
+
+        flutterwave_payload = {
+            "tx_ref": tx_ref,
+            "amount": str(total_amount),
+            "currency": currency,
+            "redirect_url": redirect_url,
+            "customer": {
+                "email": user.email or 'default@example.com',
+                "name": user.username,
+                "phonenumber": getattr(user, 'phone', '')  # Handle missing phone
+            },
+            "customizations": {
+                "title": "Shoppit Payment"
             }
+        }
 
-            headers = {
-                "Authorization": f"Bearer {settings.FLUTTERWAVE_SECRET_KEY}",
-                "Content-Type": "application/json"
-            }
+        headers = {
+            "Authorization": f"Bearer {settings.FLUTTERWAVE_SECRET_KEY}",
+            "Content-Type": "application/json"
+        }
 
-            response = requests.post(
-                'https://api.flutterwave.com/v3/payments',
-                json=flutterwave_payload,
-                headers=headers
-            )
+        response = requests.post(
+            'https://api.flutterwave.com/v3/payments',
+            json=flutterwave_payload,
+            headers=headers
+        )
 
-            if response.status_code == 200:
-                return Response(response.json(), status=status.HTTP_200_OK)
-            else:
-                return Response(response.json(), status=response.status_code)
-        except requests.exceptions.RequestException as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if response.status_code == 200:
+            return Response(response.json(), status=status.HTTP_200_OK)
+        return Response({"error": response.json()}, status=response.status_code)
+
+    except requests.exceptions.RequestException as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        return Response({"error": f"Server error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['POST'])
