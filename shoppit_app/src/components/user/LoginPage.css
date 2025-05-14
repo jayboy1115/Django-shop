@@ -1,0 +1,122 @@
+/* LoginPage.css */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    margin: auto;
+}
+
+.login-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.login-title {
+    font-size: 28px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #333;
+}
+
+.login-subtitle {
+    font-size: 16px;
+    color: #777;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-label {
+    display: block;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #6050DC;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(96, 80, 220, 0.2);
+}
+
+.btn-primary {
+    width: 100%;
+    background-color: #6050DC;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #4b3bcb;
+}
+
+.btn-primary:disabled {
+    background-color: #a99eed;
+    cursor: not-allowed;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #777;
+}
+
+.login-footer p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.login-footer a {
+    color: #6050DC;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Error message styling */
+.error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 20px;
+    }
+    
+    .login-title {
+        font-size: 24px;
+    }
+    
+    .form-control {
+        padding: 10px;
+    }
+}
