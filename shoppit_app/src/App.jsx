@@ -12,7 +12,7 @@ import ProtectedRoute from "./components/ui/ProtectedRoute"
 import { AuthProvider } from "./context/AuthContext"
 import UserProfilePage from "./components/user/UserProfilePage"
 import PaymentStatusPage from "./components/payment/PaymentStatusPage"
-import SignUpPage from "./components/user/SignUpPage";
+import SignUpPage from "./components/user/SignUpPage"
 
 const App = () => {
 

@@ -3,7 +3,7 @@ import CartItem from "./CartItem";
 import CartSummary from "./CartSummary";
 import api from "../../api";
 import Spinner from "../ui/Spinner";
-import useCartData from "../../hooks/useCartData";
+import { useCartData } from "../../hooks/useCartData";
 
 const CartPage = ({ setNumberCartItems }) => {
   const {
