@@ -1,0 +1,62 @@
+/* Custom Theme for Shoppit */
+:root {
+  --primary: #4f8cff;
+  --secondary: #ffb347;
+  --accent: #ff5e62;
+  --background: #f7f9fb;
+  --card-bg: #fff;
+  --text-main: #222;
+  --text-muted: #6c757d;
+  --border-radius: 1rem;
+}
+
+body {
+  background: var(--background);
+  color: var(--text-main);
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+}
+
+.login-card, .login-compact-card, .card, .shadow {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 24px 0 rgba(79,140,255,0.08);
+  border: none;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border: none;
+  border-radius: 2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+}
+.btn-primary:hover, .btn-primary:focus {
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+}
+
+.form-control {
+  border-radius: 0.75rem;
+  border: 1px solid #e0e6ed;
+  background: #f9fbfd;
+  color: var(--text-main);
+}
+
+h2, .login-title, .login-compact-title {
+  color: var(--primary);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.login-footer, .login-compact-footer {
+  color: var(--text-muted);
+}
+
+.alert-primary {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+}
+
+/* Add more custom styles as needed */
