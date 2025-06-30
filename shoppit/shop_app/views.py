@@ -1,6 +1,6 @@
 import uuid
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from .models import Product, Cart, CartItem, Transaction
 from .serializers import ProductSerializer, DetailedProductSerializer, CartItemSerializer, SimpleCartSerializer, \
@@ -39,7 +39,7 @@ def products(request):
 
 @api_view(["GET"])
 def product_detail(request, slug):
-    product = Product.objects.get(slug=slug)
+    product = get_object_or_404(Product, slug=slug)
     serializer = DetailedProductSerializer(product)
     return Response(serializer.data)
 
@@ -48,16 +48,18 @@ def add_item(request):
     try:
         cart_code = request.data.get("cart_code")
         product_id = request.data.get("product_id")
-
-        cart, created = Cart.objects.get_or_create(cart_code = cart_code)
+        cart, created = Cart.objects.get_or_create(cart_code=cart_code)
         product = Product.objects.get(id=product_id)
-
         cartitem, created = CartItem.objects.get_or_create(cart=cart, product=product)
-        cartitem.quantity = 1
+        if not created:
+            cartitem.quantity += 1
+        else:
+            cartitem.quantity = 1
         cartitem.save()
-
         serializer = CartItemSerializer(cartitem)
-        return Response({"data": serializer.data, "message": "CartItem created successfully"}, status=201)
+        return Response({"data": serializer.data, "message": "CartItem created/updated successfully"}, status=201)
+    except Product.DoesNotExist:
+        return Response({"error": "Product not found."}, status=404)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
 

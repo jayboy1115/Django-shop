@@ -6,7 +6,7 @@ from django.conf import settings
 class Product(models.Model):
     CATEGORY = (("Electronics", "ELECTRONICS"),
                 ("Groceries", "GROCERIES"),
-                ("CLothings", "CLOTHINGS")
+                ("Clothings", "CLOTHINGS"),  # Fixed typo
                 )
     name = models.CharField(max_length=100)
     slug = models.SlugField(blank=True, null=True)
@@ -19,16 +19,14 @@ class Product(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-
         if not self.slug:
             self.slug = slugify(self.name)
             unique_slug = self.slug
             counter = 1
-            if Product.objects.filter(slug=unique_slug).exists():
+            while Product.objects.filter(slug=unique_slug).exists():
                 unique_slug = f'{self.slug}-{counter}'
                 counter += 1
             self.slug = unique_slug
-
         super().save(*args, **kwargs)
 
 

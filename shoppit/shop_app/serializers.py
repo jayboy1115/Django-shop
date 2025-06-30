@@ -1,5 +1,3 @@
-from itertools import product
-
 from rest_framework import serializers
 from .models import Product, Cart, CartItem
 from django.contrib.auth import get_user_model
@@ -102,11 +100,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         username = validated_data["username"]
         first_name = validated_data["first_name"]
         last_name = validated_data["last_name"]
-        first_name = validated_data["first_name"]
         password = validated_data["password"]
 
-        user = get_user_model()
-        new_user = user.objects.create(username=username,
+        User = get_user_model()  # Use capitalized variable for class
+        new_user = User.objects.create(username=username,
                                        first_name=first_name, last_name=last_name)
         new_user.set_password(password)
         new_user.save()

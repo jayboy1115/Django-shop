@@ -28,12 +28,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_f48ip)b*as=k40i1ny=h+p8a1eubc)w_6yv9u!8f6%h(3etf8'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-_f48ip)b*as=k40i1ny=h+p8a1eubc)w_6yv9u!8f6%h(3etf8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',') if os.getenv('DJANGO_ALLOWED_HOSTS') else []
 
 
 # Application definition
@@ -166,3 +166,6 @@ PAYPAL_CLIENT_SECRET = 'EMC7MA9FvVWxFl7lEPwGv683HR0jd0Hkb8RWYS0BTQkSSIHXDRaLpDRH
 PAYPAL_MODE = 'sandbox'
 
 REACT_BASE_URL = os.getenv('REACT_BASE_URL', 'http://localhost:5173')
+
+# For production, set DEBUG=False and configure ALLOWED_HOSTS properly.
+# Never commit your real SECRET_KEY to version control.

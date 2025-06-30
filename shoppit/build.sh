@@ -1,8 +1,8 @@
 #!/bin/bash
 set -o errexit
 
-# Install dependencies using Poetry
-poetry install --no-interaction --no-ansi
+# Install dependencies using pip
+pip install -r ../requirements.txt
 
 # Collect static files
 python manage.py collectstatic --no-input

@@ -30,4 +30,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
+# For development only: serve media files via Django. Use a web server for production.
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
