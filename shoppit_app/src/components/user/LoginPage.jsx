@@ -45,30 +45,30 @@ const LoginPage = () => {
     }
 
   return (
-    <div className="login-compact-container">
-        <div className="login-compact-card shadow">
+    <div className="login-container my-5">
+        <div className="login-card shadow">
             {error && <Error error={error} />}
-            <h2 className="login-compact-title">Login</h2>
+            <h2 className="login-title">Login</h2>
             <form onSubmit={handleSubmit}>
-                <div className="mb-2">
-                    <label htmlFor="username" className="form-label small">Username</label>
+                <div className="mb-3">
+                    <label htmlFor="username" className="form-label">Username</label>
                     <input 
                         type="username" 
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className="form-control form-control-sm" 
+                        className="form-control" 
                         id="email" 
                         placeholder="Username" 
                         required 
                     />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="password" className="form-label small">Password</label>
+                    <label htmlFor="password" className="form-label">Password</label>
                     <input 
                         type="password" 
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="form-control form-control-sm" 
+                        className="form-control" 
                         id="password" 
                         placeholder="Password" 
                         required 
@@ -76,13 +76,13 @@ const LoginPage = () => {
                 </div>
                 <button 
                     type="submit" 
-                    className="btn btn-primary btn-sm w-100" 
+                    className="btn btn-primary w-100" 
                     disabled={loading}
                 >
                     {loading ? "Logging in..." : "Login"}
                 </button>
             </form>
-            <div className="login-compact-footer small mt-2">
+            <div className="login-footer mt-2">
                 <p className="mb-0">No account? <Link to="/signup">Sign up</Link></p>
             </div>
         </div>
