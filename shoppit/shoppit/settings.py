@@ -64,9 +64,11 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-"http://localhost:5173",
-"http://localhost:5174",
-"http://localhost:5175",
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "https://django-shop-6.onrender.com",
+    "https://your-vercel-app.vercel.app",  # Replace with your actual Vercel domain after deploy
 ]
 
 ROOT_URLCONF = 'shoppit.urls'
