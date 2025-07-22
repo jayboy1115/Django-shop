@@ -4,7 +4,7 @@
     {
       "src": "shoppit_app/package.json",
       "use": "@vercel/static-build",
-      "options": { "distDir": "dist" }
+      "config": { "outputDirectory": "dist" }
     },
     {
       "src": "shoppit/manage.py",
