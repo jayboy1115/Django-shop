@@ -31,9 +31,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-_f48ip)b*as=k40i1ny=h+p8a1eubc)w_6yv9u!8f6%h(3etf8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+DEBUG = False
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "django-shop-6.onrender.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "django-shop-6.onrender.com", ".vercel.app"]
 
 
 # Application definition
@@ -70,6 +70,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://django-shop-6.onrender.com",
     "https://django-shop-omega.vercel.app",
     "https://django-shop-9xuq88o0p-ibitoyejohnson234-gmailcoms-projects.vercel.app",
+    "https://django-shop.vercel.app",
 ]
 
 ROOT_URLCONF = 'shoppit.urls'
@@ -160,13 +161,16 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60)
 }
 
-BASE_URL = 'http://localhost:5173'
+# Base URL for frontend
+BASE_URL = os.getenv('BASE_URL', 'http://localhost:5173')
 
-FLUTTERWAVE_SECRET_KEY = "FLWSECK_TEST-71cd6f8cd88c65bb3535319a20b32095-X"
+# Payment gateway credentials
+FLUTTERWAVE_SECRET_KEY = os.getenv('FLUTTERWAVE_SECRET_KEY', 'FLWSECK_TEST-71cd6f8cd88c65bb3535319a20b32095-X')
 
-PAYPAL_CLIENT_ID = 'AZKg9X0s7hvCO0u1pq8YyUBYk7tNDCxzoCJdjYq3rsupfYGeG9nLegDkYCpPWyFfmcCof1C-bhk29NuK'
-PAYPAL_CLIENT_SECRET = 'EMC7MA9FvVWxFl7lEPwGv683HR0jd0Hkb8RWYS0BTQkSSIHXDRaLpDRHEZXugR47NcP0OPct_jOYDNXl'
-PAYPAL_MODE = 'sandbox'
+# PayPal configuration
+PAYPAL_CLIENT_ID = os.getenv('PAYPAL_CLIENT_ID', '')
+PAYPAL_CLIENT_SECRET = os.getenv('PAYPAL_CLIENT_SECRET', '')
+PAYPAL_MODE = os.getenv('PAYPAL_MODE', 'sandbox')
 
 REACT_BASE_URL = os.getenv('REACT_BASE_URL', 'http://localhost:5173')
 

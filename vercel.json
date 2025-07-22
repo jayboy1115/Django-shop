@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "shoppit_app/package.json",
+      "use": "@vercel/static-build",
+      "options": { "distDir": "dist" }
+    },
+    {
+      "src": "shoppit/manage.py",
+      "use": "@vercel/python",
+      "config": { "wsgi": "shoppit/shoppit/wsgi.py" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "shoppit/manage.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "shoppit_app/dist/index.html"
+    }
+  ]
+}

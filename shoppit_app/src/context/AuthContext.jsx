@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import jwtDecode from "jwt-decode";
 import api from "../api";
 
 export const AuthContext = createContext({

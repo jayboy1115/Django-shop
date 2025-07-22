@@ -296,8 +296,6 @@ def initiate_paypal_payment(request):
             }]
         })
 
-        print("pay_id", payment)
-
         transaction, created = Transaction.objects.get_or_create(
             ref=tx_ref,
             cart=cart,
@@ -307,7 +305,6 @@ def initiate_paypal_payment(request):
         )
 
         if payment.create():
-            # print(payment.links)
             # Extract PayPal approval URL to redirect the user
             for link in payment.links:
                 if link.rel == "approval_url":
@@ -327,24 +324,37 @@ def paypal_payment_callback(request):
 
     user = request.user
 
-    print("refff", ref)
+    try:
+        transaction = Transaction.objects.get(ref=ref)
 
-    transaction = Transaction.objects.get(ref=ref)
+        if payment_id and payer_id:
+            # Fetch payment object using PayPal SDK
+            payment = paypalrestsdk.Payment.find(payment_id)
+            
+            # Execute the payment
+            if payment.execute({"payer_id": payer_id}):
+                # Payment executed successfully
+                transaction.status = 'completed'
+                transaction.save()
+                cart = transaction.cart
+                cart.paid = True
+                cart.user = user
+                cart.save()
 
-    if payment_id and payer_id:
-        # Fetch payment object using PayPal SDK
-        payment = paypalrestsdk.Payment.find(payment_id)
-
-        transaction.status = 'completed'
-        transaction.save()
-        cart = transaction.cart
-        cart.paid = True
-        cart.user = user
-        cart.save()
-
-        return Response({'message': 'Payment successful!',
-                         'subMessage': 'You have successfully made payment for the items you purchased 😍'})
-
-
-    else:
-        return Response({"error": "Invalid payment details."}, status=400)
+                return Response({
+                    'message': 'Payment successful!',
+                    'subMessage': 'You have successfully made payment for the items you purchased 😍'
+                })
+            else:
+                # Payment execution failed
+                return Response({
+                    "error": "Payment execution failed: " + payment.error,
+                    "details": payment.error
+                }, status=400)
+        else:
+            return Response({"error": "Invalid payment details."}, status=400)
+    
+    except Transaction.DoesNotExist:
+        return Response({"error": "Transaction not found."}, status=404)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)

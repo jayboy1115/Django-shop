@@ -9,15 +9,13 @@ const OrderHistoryItemContainer = ({orderitems}) => {
           <h5>Order History</h5>
         </div>
 
-        {orderitems.map(item => <OrderHistoryItem key={item.id} item={item} />)}
-
-        
-
-   
-
-
-
-       
+        {orderitems.length > 0 ? (
+          orderitems.map(item => <OrderHistoryItem key={item.id} item={item} />)
+        ) : (
+          <div className="card-body text-center">
+            <p>No order history available</p>
+          </div>
+        )}
       </div>
     </div>
   </div>
